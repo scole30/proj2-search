@@ -78,6 +78,13 @@ TEST(BuildIndex, SpecificTokenMappings) {
   EXPECT_THAT(index.at("red"), ContainerEq(expectedRed));
 }
 
+TEST(BuildIndex, HandlesInvalidFile) {
+    map<string, set<string>> index;
+    int count = buildIndex("data/testfile.txt", index);
+    EXPECT_THAT(count, Eq(0));
+    EXPECT_THAT(index.size(), Eq(0));
+}
+
 // FindQueryMatches tests
 TEST(FindQueryMatches, MissingTerms) {
   map<string, set<string>> index = {
