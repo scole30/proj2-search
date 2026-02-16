@@ -23,6 +23,12 @@ TEST(CleanToken, TestsPunctuationMiddleAndEnds) {
   EXPECT_THAT(cleanToken("!don't!"), Eq("don't"));
 }
 
+TEST(CleanToken, FullCoverage) {
+  EXPECT_THAT(cleanToken("HELLO"), Eq("hello"));
+  EXPECT_THAT(cleanToken("HeLlO"), Eq("hello"));
+  EXPECT_THAT(cleanToken("...HELLO..."), Eq("hello"));
+}
+
 
 
 // GatherTokens tests
@@ -56,35 +62,45 @@ TEST(GatherTokens, UniquenessAndCleaning) {
 
 
 // BuildIndex tests
-TEST(BuildIndex, ProcessesCorrectCount) {
-    map<string, set<string>> index;
-    int count = buildIndex("testfile.txt", index);
-    
-    EXPECT_THAT(count, Eq(2));
-    EXPECT_THAT(index["hello"].size(), Eq(1));
-    EXPECT_THAT(index["world"].size(), Eq(1));
+TEST(BuildIndex, TinyFileStats) {
+  map<string, set<string>> index;
+  int count = buildIndex("data/tiny.txt", index);
+  EXPECT_THAT(count, Eq(4));
+  EXPECT_THAT(index.size(), Eq(11));
+}
+
+TEST(BuildIndex, SpecificTokenMappings) {
+  map<string, set<string>> index;
+  buildIndex("data/tiny.txt", index);
+  set<string> expectedFish = {"http://example.com/a", "http://example.com/b"};
+  EXPECT_THAT(index.count("fish"), Eq(1));
+  EXPECT_THAT(index.at("fish"), ContainerEq(expectedFish));
+  set<string> expectedRed = {"http://example.com/a"};
+  EXPECT_THAT(index.at("red"), ContainerEq(expectedRed));
+  EXPECT_THAT(index.count("blue"), Eq(1));
+  EXPECT_THAT(index.count("Blue"), Eq(0));
 }
 
 // FindQueryMatches tests
 TEST(FindQueryMatches, MissingTerms) {
-    map<string, set<string>> index = {
-      {"tasty", {"url1.com", "url2.com"}},
-      {"healthy", {"url2.com", "url3.com"}}
-    };
-    EXPECT_THAT(findQueryMatches(index, "nonexistent"), IsEmpty());
-    EXPECT_THAT(findQueryMatches(index, "tasty +nonexistent"), IsEmpty());
-    set<string> expected = {"url1.com", "url2.com"};
-    EXPECT_THAT(findQueryMatches(index, "tasty -nonexistent"), ContainerEq(expected));
+  map<string, set<string>> index = {
+    {"tasty", {"url1.com", "url2.com"}},
+    {"healthy", {"url2.com", "url3.com"}}
+  };
+  EXPECT_THAT(findQueryMatches(index, "nonexistent"), IsEmpty());
+  EXPECT_THAT(findQueryMatches(index, "tasty +nonexistent"), IsEmpty());
+  set<string> expected = {"url1.com", "url2.com"};
+  EXPECT_THAT(findQueryMatches(index, "tasty -nonexistent"), ContainerEq(expected));
 }
 
 TEST(FindQueryMatches, CompoundQueries) {
-    map<string, set<string>> index = {
-      {"red", {"u1", "u2"}},
-      {"blue", {"u2", "u3"}},
-      {"green", {"u1"}}
-    };
-    set<string> expectedOr = {"u1", "u2", "u3"};
-    EXPECT_THAT(findQueryMatches(index, "red blue"), ContainerEq(expectedOr));
-    set<string> expectedAnd = {"u1"};
-    EXPECT_THAT(findQueryMatches(index, "red blue +green"), ContainerEq(expectedAnd));
+  map<string, set<string>> index = {
+    {"red", {"u1", "u2"}},
+    {"blue", {"u2", "u3"}},
+    {"green", {"u1"}}
+  };
+  set<string> expectedOr = {"u1", "u2", "u3"};
+  EXPECT_THAT(findQueryMatches(index, "red blue"), ContainerEq(expectedOr));
+  set<string> expectedAnd = {"u1"};
+  EXPECT_THAT(findQueryMatches(index, "red blue +green"), ContainerEq(expectedAnd));
 }
