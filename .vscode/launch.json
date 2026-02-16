@@ -1,0 +1,90 @@
+{
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "build search_main",
+      "name": "Debug Search Main",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/search_main",
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "build search_tests",
+      "name": "Debug CleanToken",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/search_tests",
+      "args": [
+        "--gtest_color=yes",
+        "--gtest_filter=CleanToken*",
+      ],
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "build search_tests",
+      "name": "Debug GatherTokens",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/search_tests",
+      "args": [
+        "--gtest_color=yes",
+        "--gtest_filter=GatherTokens*",
+      ],
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "build search_tests",
+      "name": "Debug BuildIndex",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/search_tests",
+      "args": [
+        "--gtest_color=yes",
+        "--gtest_filter=BuildIndex*",
+      ],
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "build search_tests",
+      "name": "Debug FindQueryMatches",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/search_tests",
+      "args": [
+        "--gtest_color=yes",
+        "--gtest_filter=FindQueryMatches*",
+      ],
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "build search_tests",
+      "name": "Debug SearchEngine",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/search_tests",
+      "args": [
+        "--gtest_color=yes",
+        "--gtest_filter=SearchEngine*",
+      ],
+    },
+  ],
+}
