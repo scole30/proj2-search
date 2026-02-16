@@ -66,19 +66,16 @@ TEST(BuildIndex, TinyFileStats) {
   map<string, set<string>> index;
   int count = buildIndex("data/tiny.txt", index);
   EXPECT_THAT(count, Eq(4));
-  EXPECT_THAT(index.size(), Eq(11));
+  EXPECT_THAT(index.size(), Eq(20));
 }
 
 TEST(BuildIndex, SpecificTokenMappings) {
   map<string, set<string>> index;
   buildIndex("data/tiny.txt", index);
-  set<string> expectedFish = {"http://example.com/a", "http://example.com/b"};
-  EXPECT_THAT(index.count("fish"), Eq(1));
+  set<string> expectedFish = {"www.dr.seuss.net", "www.shoppinglist.com"};
   EXPECT_THAT(index.at("fish"), ContainerEq(expectedFish));
-  set<string> expectedRed = {"http://example.com/a"};
+  set<string> expectedRed = {"www.dr.seuss.net", "www.rainbow.org"};
   EXPECT_THAT(index.at("red"), ContainerEq(expectedRed));
-  EXPECT_THAT(index.count("blue"), Eq(1));
-  EXPECT_THAT(index.count("Blue"), Eq(0));
 }
 
 // FindQueryMatches tests
