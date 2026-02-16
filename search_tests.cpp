@@ -17,6 +17,13 @@ TEST(CleanToken, ReturnsEmptyIfNoLetters) {
   EXPECT_THAT(cleanToken("..."), Eq(""));
 }
 
+TEST(CleanToken, TestsPunctuationMiddleAndEnds) {
+  EXPECT_THAT(cleanToken("!don't"), Eq("don't"));
+  EXPECT_THAT(cleanToken("don't!"), Eq("don't"));
+  EXPECT_THAT(cleanToken("!don't!"), Eq("don't"));
+}
+
+
 
 // GatherTokens tests
 TEST(GatherTokens, HandlesWhitespace) {
@@ -33,6 +40,12 @@ TEST(GatherTokens, HandlesEdgeCaseSpaces) {
   string text2 = "  test  ";
   set<string> expected2 = {"test"};
   EXPECT_THAT(gatherTokens(text2), ContainerEq(expected2));
+
+  string text3 = "   test";
+  EXPECT_THAT(gatherTokens(text3), ContainerEq(expected2));
+
+  string text4 = "test  ";
+  EXPECT_THAT(gatherTokens(text4), ContainerEq(expected2));
 }
 
 TEST(GatherTokens, UniquenessAndCleaning) {
