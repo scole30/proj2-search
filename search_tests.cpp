@@ -109,7 +109,7 @@ TEST(FindQueryMatches, CompoundQueries) {
   EXPECT_THAT(findQueryMatches(index, "red blue +green"), ContainerEq(expectedAnd));
 }
 
-TEST(FindQueryMatches, LaterTermUnmodifiedMissing) {
+TEST(FindQueryMatches, LaterTermUnmodifiedMissingOne) {
   map<string, set<string>> index = {
     {"red", {"url1.com"}},
     {"blue", {"url2.com"}}
@@ -118,4 +118,16 @@ TEST(FindQueryMatches, LaterTermUnmodifiedMissing) {
   EXPECT_THAT(findQueryMatches(index, "red nonexistent"), ContainerEq(expected));
   set<string> expected2 = {"url2.com"};
   EXPECT_THAT(findQueryMatches(index, "nonexistent blue"), ContainerEq(expected2));
+}
+
+
+TEST(FindQueryMatches, LaterTermUnmodifiedMissingTwo) {
+  map<string, set<string>> index = {
+    {"blue", {"url1.com", "url2.com"}},
+    {"red", {"url2.com", "url3.com"}}
+  };
+  set<string> expected = {"url1.com", "url2.com"};
+  EXPECT_THAT(findQueryMatches(index, "blue nonexistent"), ContainerEq(expected));
+  set<string> expectedCompound = {"url1.com", "url2.com", "url3.com"};
+  EXPECT_THAT(findQueryMatches(index, "blue nonexistent red"), ContainerEq(expectedCompound));
 }
