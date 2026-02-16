@@ -79,10 +79,10 @@ TEST(BuildIndex, SpecificTokenMappings) {
 }
 
 TEST(BuildIndex, HandlesInvalidFile) {
-    map<string, set<string>> index;
-    int count = buildIndex("data/testfile.txt", index);
-    EXPECT_THAT(count, Eq(0));
-    EXPECT_THAT(index.size(), Eq(0));
+  map<string, set<string>> index;
+  int count = buildIndex("data/testfile.txt", index);
+  EXPECT_THAT(count, Eq(0));
+  EXPECT_THAT(index.size(), Eq(0));
 }
 
 // FindQueryMatches tests
@@ -107,4 +107,15 @@ TEST(FindQueryMatches, CompoundQueries) {
   EXPECT_THAT(findQueryMatches(index, "red blue"), ContainerEq(expectedOr));
   set<string> expectedAnd = {"u1"};
   EXPECT_THAT(findQueryMatches(index, "red blue +green"), ContainerEq(expectedAnd));
+}
+
+TEST(FindQueryMatches, LaterTermUnmodifiedMissing) {
+  map<string, set<string>> index = {
+    {"red", {"url1.com"}},
+    {"blue", {"url2.com"}}
+  };
+  set<string> expected = {"url1.com"};
+  EXPECT_THAT(findQueryMatches(index, "red nonexistent"), ContainerEq(expected));
+  set<string> expected2 = {"url2.com"};
+  EXPECT_THAT(findQueryMatches(index, "nonexistent blue"), ContainerEq(expected2));
 }
